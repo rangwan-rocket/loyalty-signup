@@ -11,7 +11,7 @@ npm install github:rangwan-rocket/loyalty-signup
 ## Quick Start
 
 ```tsx
-import { LoyaltySignup } from 'loyalty-signup';
+import { LoyaltySignup } from '@loyaltyst/signup';
 
 function App() {
   const [showSignup, setShowSignup] = useState(false);
@@ -188,7 +188,7 @@ const [open, setOpen] = useState(false);
 ```tsx
 'use client';
 import { useState } from 'react';
-import { LoyaltySignup } from 'loyalty-signup';
+import { LoyaltySignup } from '@loyaltyst/signup';
 
 export default function Page() {
   const [show, setShow] = useState(false);
