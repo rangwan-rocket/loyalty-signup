@@ -7,6 +7,8 @@ interface LoyaltySignupProps {
     language?: Language;
     theme?: ThemeConfig;
     mode?: "modal" | "inline" | "fullscreen";
+    /** Override the redirect URI used for OAuth (e.g. LINE Login). Falls back to current page URL when omitted. */
+    callbackUrl?: string;
 }
 interface ThemeConfig {
     primaryColor?: string;
@@ -48,6 +50,6 @@ interface LoyaltySignupFullProps extends LoyaltySignupProps {
     /** Supply config directly (skips config endpoint — useful for demo/testing) */
     directConfig?: MerchantConfig;
 }
-declare function LoyaltySignup({ merchantCode, onComplete, onClose, language, theme: themeOverrides, mode, directConfig, }: LoyaltySignupFullProps): react_jsx_runtime.JSX.Element;
+declare function LoyaltySignup({ merchantCode, onComplete, onClose, language, theme: themeOverrides, mode, callbackUrl, directConfig, }: LoyaltySignupFullProps): react_jsx_runtime.JSX.Element;
 
 export { type Language, LoyaltySignup, type LoyaltySignupFullProps, type LoyaltySignupProps, type MerchantConfig, type ThemeConfig, type UserData };

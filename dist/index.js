@@ -412,7 +412,7 @@ function reducer(state, action) {
       return state;
   }
 }
-function useSignupFlow(merchantCode, apiBaseUrl, language, directConfig) {
+function useSignupFlow(merchantCode, apiBaseUrl, language, directConfig, callbackUrl) {
   const [state, dispatch] = (0, import_react.useReducer)(reducer, INITIAL_STATE);
   const lineCallbackHandled = (0, import_react.useRef)(false);
   (0, import_react.useEffect)(() => {
@@ -444,7 +444,7 @@ function useSignupFlow(merchantCode, apiBaseUrl, language, directConfig) {
     }
     cleanLineCallbackParams();
     dispatch({ type: "SET_LOADING", loading: true });
-    const redirectUri = sessionStorage.getItem("ls_line_redirect_uri") || window.location.origin + window.location.pathname;
+    const redirectUri = sessionStorage.getItem("ls_line_redirect_uri") || callbackUrl || window.location.origin + window.location.pathname;
     exchangeLineCode(callback.code, merchantCode, redirectUri).then((profile) => {
       dispatch({
         type: "SET_LINE_PROFILE",
@@ -464,7 +464,7 @@ function useSignupFlow(merchantCode, apiBaseUrl, language, directConfig) {
     }).catch((err) => {
       dispatch({ type: "SET_ERROR", error: err.message });
     });
-  }, [state.config, merchantCode]);
+  }, [state.config, merchantCode, callbackUrl]);
   const initiateLineLogin = (0, import_react.useCallback)(() => {
     if (!state.config) return;
     const lineChannelId = state.config.line_liff_id;
@@ -473,7 +473,7 @@ function useSignupFlow(merchantCode, apiBaseUrl, language, directConfig) {
       return;
     }
     const oauthState = generateState();
-    const redirectUri = window.location.origin + window.location.pathname;
+    const redirectUri = callbackUrl || window.location.origin + window.location.pathname;
     sessionStorage.setItem("ls_line_state", oauthState);
     sessionStorage.setItem("ls_line_redirect_uri", redirectUri);
     const url = buildLineAuthUrl({
@@ -482,7 +482,7 @@ function useSignupFlow(merchantCode, apiBaseUrl, language, directConfig) {
       state: oauthState
     });
     window.location.href = url;
-  }, [state.config]);
+  }, [state.config, callbackUrl]);
   const requestOtp = (0, import_react.useCallback)(
     async (phone) => {
       dispatch({ type: "SET_LOADING", loading: true });
@@ -1978,9 +1978,10 @@ function LoyaltySignup({
   language,
   theme: themeOverrides,
   mode = "modal",
+  callbackUrl,
   directConfig
 }) {
-  const { state, actions } = useSignupFlow(merchantCode, void 0, language, directConfig);
+  const { state, actions } = useSignupFlow(merchantCode, void 0, language, directConfig, callbackUrl);
   const theme = (0, import_react6.useMemo)(() => {
     const fromConfig = state.config?.theme ? {
       primaryColor: state.config.theme.primary_color,
