@@ -65,9 +65,10 @@ export function LoyaltySignup({
   language,
   theme: themeOverrides,
   mode = "modal",
+  callbackUrl,
   directConfig,
 }: LoyaltySignupFullProps) {
-  const { state, actions } = useSignupFlow(merchantCode, undefined, language, directConfig);
+  const { state, actions } = useSignupFlow(merchantCode, undefined, language, directConfig, callbackUrl);
 
   // Merge: prop overrides > merchant config from DB > defaults
   const theme = useMemo(() => {

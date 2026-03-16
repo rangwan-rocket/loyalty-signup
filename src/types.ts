@@ -9,6 +9,8 @@ export interface LoyaltySignupProps {
   language?: Language;
   theme?: ThemeConfig;
   mode?: "modal" | "inline" | "fullscreen";
+  /** Override the redirect URI used for OAuth (e.g. LINE Login). Falls back to current page URL when omitted. */
+  callbackUrl?: string;
 }
 
 export interface ThemeConfig {
