@@ -259,6 +259,7 @@ export function useSignupFlow(
   apiBaseUrl?: string,
   language?: Language,
   directConfig?: MerchantConfig,
+  callbackUrl?: string,
 ) {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
   const lineCallbackHandled = useRef(false);
@@ -298,7 +299,7 @@ export function useSignupFlow(
     cleanLineCallbackParams();
     dispatch({ type: "SET_LOADING", loading: true });
 
-    const redirectUri = sessionStorage.getItem("ls_line_redirect_uri") || window.location.origin + window.location.pathname;
+    const redirectUri = sessionStorage.getItem("ls_line_redirect_uri") || callbackUrl || window.location.origin + window.location.pathname;
 
     exchangeLineCode(callback.code, merchantCode, redirectUri)
       .then((profile) => {
@@ -322,7 +323,7 @@ export function useSignupFlow(
       .catch((err) => {
         dispatch({ type: "SET_ERROR", error: (err as Error).message });
       });
-  }, [state.config, merchantCode]);
+  }, [state.config, merchantCode, callbackUrl]);
 
   /* ---------- Actions ---------- */
 
@@ -334,7 +335,7 @@ export function useSignupFlow(
       return;
     }
     const oauthState = generateState();
-    const redirectUri = window.location.origin + window.location.pathname;
+    const redirectUri = callbackUrl || window.location.origin + window.location.pathname;
     sessionStorage.setItem("ls_line_state", oauthState);
     sessionStorage.setItem("ls_line_redirect_uri", redirectUri);
     const url = buildLineAuthUrl({
@@ -343,7 +344,7 @@ export function useSignupFlow(
       state: oauthState,
     });
     window.location.href = url;
-  }, [state.config]);
+  }, [state.config, callbackUrl]);
 
   const requestOtp = useCallback(
     async (phone: string) => {
